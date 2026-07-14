@@ -1,0 +1,18 @@
+{
+  "current_price": 550.25,
+  "previous_close": 542.87,
+  "open": 542.99,
+  "day_high": 556.85,
+  "day_low": 540.4,
+  "volume": 18424450,
+  "avg_volume": 17268429,
+  "market_cap": 1396767457280,
+  "bid": 549.94,
+  "ask": 553.0,
+  "bid_size": 1,
+  "ask_size": 2,
+  "last_update": "2026-06-26T23:26:36.140773",
+  "change": 7.380005,
+  "change_percent": 1.3594425,
+  "currency": "USD"
+}

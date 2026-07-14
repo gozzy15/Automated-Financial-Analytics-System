@@ -1,0 +1,46 @@
+```text
+# ===============================
+# Financial Analytics System
+# Python 3.13+
+# ===============================
+
+# Core Data Processing
+pandas==2.3.1
+numpy==2.3.1
+
+# Financial Data
+yfinance==0.2.65
+
+# Machine Learning
+scikit-learn==1.7.1
+joblib==1.5.1
+
+# Dashboard Frameworks
+dash==3.2.0
+dash-bootstrap-components==2.0.4
+plotly==6.3.0
+
+# Streamlit Dashboard
+streamlit==1.48.0
+
+# Database
+SQLAlchemy==2.0.43
+
+# Google Drive Integration
+google-api-python-client==2.178.0
+google-auth==2.40.3
+google-auth-oauthlib==1.2.2
+google-auth-httplib2==0.2.0
+
+# Email / Environment
+python-dotenv==1.1.1
+
+# Excel Reporting
+openpyxl==3.1.5
+
+# HTTP Requests
+requests==2.32.4
+
+# Visualization
+matplotlib==3.10.5
+```
