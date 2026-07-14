@@ -1,4 +1,5 @@
-# Automated-Financial-Analytics-System
+# Automated-Financial-Analytics-System<br>
+![Dashboard Overview](assets/dashboard_overview.png)
 
 A comprehensive financial analytics platform that automates stock market data collection, ETL processing, machine learning-based price prediction, interactive dashboard visualization, automated reporting, Google Drive integration, and email-based report distribution.
 
