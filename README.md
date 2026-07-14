@@ -1,4 +1,4 @@
-# Financial-Analytics-System
+# Automated-Financial-Analytics-System
 
 A comprehensive financial analytics platform that automates stock market data collection, ETL processing, machine learning-based price prediction, interactive dashboard visualization, automated reporting, Google Drive integration, and email-based report distribution.
 
@@ -7,13 +7,14 @@ The system combines data engineering, data analytics, machine learning, and busi
 
 ## Project Overview
 
-The **Financial Analytics System** is an end-to-end Python application designed to automate the collection, processing, analysis, visualization, and reporting of stock market data. It demonstrates how data engineering, machine learning, and business intelligence can be integrated into a single workflow for financial analysis.
+The **Automated Financial Analytics System** is an end-to-end Python application designed to automate the collection, processing, analysis, visualization, and reporting of stock market data. It demonstrates how data engineering, machine learning, and business intelligence can be integrated into a single workflow for financial analysis.
 
 The system extracts historical and live market data from financial data sources, processes the data through an ETL (Extract, Transform, Load) pipeline, stores the cleaned data in a SQLite database, and performs financial analysis using technical indicators and machine learning models. It then presents the results through interactive dashboards, automated reports, and email notifications.
 
 The project includes two complementary dashboards:
 
 * A **Streamlit dashboard** for simple, user-friendly exploration of financial data.
+
 * A **Dash dashboard** for more advanced analytics, interactive visualizations, and portfolio insights.
 
 To support automation, the application integrates with Google Drive for data storage and retrieval, generates Excel, CSV, and HTML reports, and can automatically distribute reports via email with file attachments.
@@ -32,19 +33,6 @@ Overall, this project demonstrates practical skills in:
 * Reporting Automation
 * Cloud Integration
 * Python Application Development
-
-## System Architecture
-
-![Project Architecture](assets/project_architecture.png)
-
-or
-
-## System Workflow
-
-![System Workflow](assets/system_workflow.png)
-
-
-
 
 ## Key Features
 
@@ -186,8 +174,6 @@ The system operates through the following stages:
 
 The modular architecture allows each component to operate independently while remaining fully integrated into the overall analytics pipeline. This separation of responsibilities makes the system easier to maintain, extend, and test as additional data sources, machine learning models, or reporting capabilities are introduced.
 
-
-
 ## Project Structure
 
 ```text
@@ -256,7 +242,6 @@ Financial-Analytics-System/
 ├── README.md
 └── requirements.txt
 ```
-
 
 ## Technologies Used
 
@@ -330,8 +315,8 @@ Follow the steps below to set up and run the Financial Analytics System on your 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/gozzy15/Financial-Analytics-System.git
-cd Financial-Analytics-System
+git clone https://github.com/gozzy15/Automated-Financial-Analytics-System.git
+cd Automated-Financial-Analytics-System
 ```
 
 ---
@@ -646,16 +631,6 @@ A typical end-to-end workflow is:
 9. Monitor live market data when required.
 
 
-`adding a Screenshots section`
-dashboard_overview.png
-dashboard_chart_price.png
-dashboard_chart_vol.png
-spreadsheet_analysis.png
-email_report.png
-key_metrics.png
-
-
-
 ## Screenshots
 
 The following screenshots illustrate some of the key components of the Financial Analytics System.
@@ -666,9 +641,7 @@ The following screenshots illustrate some of the key components of the Financial
 
 The overall architecture of the application showing the interaction between data collection, processing, storage, analytics, reporting, and visualization components.
 
-```text
-assets/project_architecture.png
-```
+![Project Architecture](assets/project_architecture.png)
 
 ---
 
@@ -676,9 +649,7 @@ assets/project_architecture.png
 
 The end-to-end workflow illustrating how financial data flows through the system from extraction to reporting.
 
-```text
-assets/system_workflow.png
-```
+![System Workflow](assets/system_workflow.png)
 
 ---
 
@@ -686,9 +657,7 @@ assets/system_workflow.png
 
 The primary analytics dashboard displaying key financial metrics and interactive visualizations.
 
-```text
-assets/dashboard_overview.png
-```
+![Dashboard Overview](assets/dashboard_overview.png)
 
 ---
 
@@ -696,9 +665,7 @@ assets/dashboard_overview.png
 
 Interactive visualization of historical stock prices used for trend analysis.
 
-```text
-assets/dashboard_chart_price.png
-```
+![Price Chart](assets/dashboard_chart_price.png)
 
 ---
 
@@ -706,9 +673,7 @@ assets/dashboard_chart_price.png
 
 Trading volume visualization for monitoring market activity.
 
-```text
-assets/dashboard_chart_vol.png
-```
+![Volume Analysis](assets/dash_volume_analysis_chart.png)
 
 ---
 
@@ -716,9 +681,7 @@ assets/dashboard_chart_vol.png
 
 Automatically generated Excel report containing processed financial data and summary metrics.
 
-```text
-assets/spreadsheet_analysis.png
-```
+![Spreadsheet Report](assets/spreadsheet_analysis.png)
 
 ---
 
@@ -726,9 +689,7 @@ assets/spreadsheet_analysis.png
 
 Automated HTML email report generated by the reporting module.
 
-```text
-assets/email_report.png
-```
+![Email Report](assets/email_report.png)
 
 ---
 
@@ -736,9 +697,7 @@ assets/email_report.png
 
 Overview of the primary financial indicators calculated by the system.
 
-```text
-assets/key_metrics.png
-```
+![Performance Metrics](assets/dash_performance_metrics_table.png)
 
 ---
 
@@ -746,9 +705,7 @@ assets/key_metrics.png
 
 Machine learning predictions and generated trading signals for monitored stocks.
 
-```text
-assets/prediction_table.png
-```
+![Prediction Table](assets/dashboard_overview.png)
 
 
 ## Future Improvements
