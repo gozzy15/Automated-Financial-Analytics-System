@@ -714,8 +714,6 @@ Machine learning predictions and generated trading signals for monitored stocks.
 
 Concise overview of the selected stock, including key performance metrics, market insights, and real-time market data to support quick and informed analysis.
 
-Quick market 
-
 ![Executive Summary](assets/dash_executive_summary.png)
 
 
