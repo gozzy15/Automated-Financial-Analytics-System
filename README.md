@@ -705,7 +705,7 @@ Overview of the primary financial indicators calculated by the system.
 
 Machine learning predictions and generated trading signals for monitored stocks.
 
-![Prediction Table](assets/dashboard_overview.png)
+![Prediction Table](assets/prediction_table.png)
 
 
 ## Future Improvements
