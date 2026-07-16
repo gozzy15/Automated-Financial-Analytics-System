@@ -132,6 +132,9 @@ class FinancialPredictor:
                 'feature_names': X.columns.tolist(),
                 'metrics': {'MAE': mae, 'RMSE': rmse}
             }
+
+            # Ensure models directory exists
+            os.makedirs(MODELS_PATH, exist_ok=True)
             
             # Save to file
             # Save trained model and scaler to disk for later use (no need to retrain)
