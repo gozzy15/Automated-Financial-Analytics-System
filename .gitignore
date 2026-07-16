@@ -50,9 +50,12 @@ logs/
 # Database
 # ==========================================
 
-*.db
+# Ignore temporary databases
 *.sqlite
 *.sqlite3
+
+# Keep the main project database
+!financial_data.db
 
 # ==========================================
 # Model Files
@@ -98,3 +101,18 @@ token.pickle
 
 # Google OAuth credentials
 credentials/
+
+# Python cache
+*.pyc
+
+# Distribution
+build/
+dist/
+*.egg-info/
+
+# Testing
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/

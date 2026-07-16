@@ -782,15 +782,29 @@ class FinancialDashboard:
         analysis_type = sidebar_params['analysis_type']
         
         # Start scheduler in background thread
-        if 'scheduler_started' not in st.session_state:
-            scheduler_thread = threading.Thread(target=self.run_scheduler, daemon=True)
 
-            logger.info(
-                "Starting background scheduler."
-            )
+        # Scheduler disabled during cloud deployment
 
-            scheduler_thread.start()
-            st.session_state.scheduler_started = True
+        # if "scheduler_started" not in st.session_state:
+        #
+        #     scheduler_thread = threading.Thread(
+        #         target=self.run_scheduler,
+        #         daemon=True
+        #     )
+        #
+        #     scheduler_thread.start()
+        #
+        #     st.session_state.scheduler_started = True
+
+        # Historical data updates will eventually be handled by
+        # a dedicated scheduled job (Render Cron Job or GitHub
+        # Actions), keeping the Streamlit app focused solely on
+        # serving users.
+        # =====================================================
+
+        logger.info(
+            "Background scheduler disabled (deployment mode)."
+        )
         
         if not tickers:
             st.warning("Please select at least one ticker from the sidebar.")
