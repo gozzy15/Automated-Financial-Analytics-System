@@ -1,11 +1,13 @@
 import yfinance as yf
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from bs4 import BeautifulSoup
 from typing import List, Dict
 import json
 from utils.logger import logger
+from processing_pipeline import DataPipeline
+from zoneinfo import ZoneInfo
 
 class FinancialScraper:
     def __init__(self):
@@ -136,59 +138,68 @@ class FinancialScraper:
             return pd.DataFrame()
     
     def get_realtime_tickers_data(self, tickers: List[str] = None) -> Dict:
-        """Get real-time data for multiple tickers at once"""
+        """
+        Retrieve the latest available market data for multiple tickers.
+
+        Uses Ticker.history() instead of yf.download() because it is
+        considerably more reliable for dashboard applications.
+        """
+
         if tickers is None:
             tickers = self.tickers
-        
+
         realtime_data = {}
-        
-        try:
-            # Download batch data (more efficient)
-            logger.info(
-                "Retrieving real-time data for %d ticker(s).\n",
-                len(tickers)
-            )
-            
-            # Use yf.download for multiple tickers at once
-            data = yf.download(
-                tickers=tickers,
-                period="1d",
-                interval="1m",  # 1-minute intervals for real-time
-                group_by='ticker',
-                progress=False
-            )
-            
-            for ticker in tickers:
-                if ticker in data.columns.levels[0]:
-                    ticker_data = data[ticker].copy()
-                    
-                    # Get the latest (most recent) data point
-                    if not ticker_data.empty:
-                        latest = ticker_data.iloc[-1]
-                        
-                        realtime_data[ticker] = {
-                            'timestamp': datetime.now().isoformat(),
-                            'open': latest.get('Open', 0),
-                            'high': latest.get('High', 0),
-                            'low': latest.get('Low', 0),
-                            'close': latest.get('Close', 0),
-                            'volume': latest.get('Volume', 0),
-                            'last_updated': ticker_data.index[-1].strftime('%Y-%m-%d %H:%M:%S')
-                        }
-                    else:
-                        realtime_data[ticker] = {'error': 'No data available'}
-                else:
-                    realtime_data[ticker] = {'error': 'Ticker not found in data'}
-            
-        except Exception:
-            logger.exception(
-                "Failed to retrieve real-time market data."
-            )
-            # Fallback to individual quotes
-            for ticker in tickers:
-                realtime_data[ticker] = self.get_live_quote(ticker)
-        
+
+        logger.info(
+            "Retrieving real-time data for %d ticker(s).",
+            len(tickers)
+        )
+
+        for ticker in tickers:
+
+            try:
+
+                stock = yf.Ticker(ticker)
+
+                fast = stock.fast_info
+
+                realtime_data[ticker] = {
+
+                    "timestamp": datetime.now().isoformat(),
+
+                    "open": float(fast.get("open") or 0),
+
+                    "high": float(fast.get("dayHigh") or 0),
+
+                    "low": float(fast.get("dayLow") or 0),
+
+                    "close": float(fast.get("lastPrice") or 0),
+
+                    "volume": int(fast.get("lastVolume") or 0),
+
+                    "previous_close": float(
+                        fast.get("previousClose") or 0
+                    ),
+
+                    "last_updated": datetime.now().strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
+
+                }
+
+            except Exception as e:
+
+                logger.exception(
+                    "Unable to retrieve live quote for %s",
+                    ticker
+                )
+
+                realtime_data[ticker] = {
+                    "error": str(e)
+                }
+
         return realtime_data
+        
     
     def scrape_marketwatch(self):
         """Scrape market news and insights"""
@@ -244,37 +255,55 @@ class FinancialScraper:
         
         return metadata
     
-    def weekly_scrape_job(self):
+    def scheduled_scrape_job(self):
         """Scheduled weekly scraping job"""
         logger.info(
-            "Weekly scrape started."
+            "Scheduled market data update job."
         )
         
-        # Scrape data
-        data = self.scrape_yahoo_finance()
+        try:
+            # Scrape data
+            data = self.scrape_yahoo_finance()
+            
+            # Save locally
+            from system_config import RAW_DATA_PATH
+            import os
+            os.makedirs(RAW_DATA_PATH, exist_ok=True)
+            
+            metadata = self.save_to_files(data, RAW_DATA_PATH)
+            pipeline = DataPipeline()
+            logger.info(
+                "Updating SQLite database..."
+            )
+
+            processed_files = pipeline.process_all_files()
+
+            logger.info(
+                "Database updated successfully. %d ticker(s) processed.",
+                len(processed_files)
+            )
+            
+            # Upload to Google Drive
+            from cloud_manager import GoogleDriveHandler
+            gdrive = GoogleDriveHandler()
+            
+            # Upload all CSV files
+            for file in os.listdir(RAW_DATA_PATH):
+                if file.endswith('.csv') or file.endswith('.json'):
+                    file_path = os.path.join(RAW_DATA_PATH, file)
+                    mime_type = 'text/csv' if file.endswith('.csv') else 'application/json'
+                    gdrive.upload_file(file_path, file, mime_type)
+            
+            logger.info(
+                "Scheduled market update started."
+            )
+            return metadata
         
-        # Save locally
-        from system_config import RAW_DATA_PATH
-        import os
-        os.makedirs(RAW_DATA_PATH, exist_ok=True)
-        
-        metadata = self.save_to_files(data, RAW_DATA_PATH)
-        
-        # Upload to Google Drive
-        from cloud_manager import GoogleDriveHandler
-        gdrive = GoogleDriveHandler()
-        
-        # Upload all CSV files
-        for file in os.listdir(RAW_DATA_PATH):
-            if file.endswith('.csv') or file.endswith('.json'):
-                file_path = os.path.join(RAW_DATA_PATH, file)
-                mime_type = 'text/csv' if file.endswith('.csv') else 'application/json'
-                gdrive.upload_file(file_path, file, mime_type)
-        
-        logger.info(
-            "Weekly scrape completed successfully."
-        )
-        return metadata
+        except Exception:
+            logger.exception(
+                "Scheduled market update failed."
+            )
+            raise
     
     def get_live_dashboard_data(self):
         """Get data specifically for live dashboard display"""
@@ -303,34 +332,108 @@ class FinancialScraper:
         return dashboard_data
     
     def get_market_status(self):
-        """Check if US market is open"""
-        now = datetime.now()
-        
-        # US Market hours: 9:30 AM - 4:00 PM EST
-        # Convert to EST (simplified)
-        est_time = (now.hour - 5) + now.minute / 60  # Rough EST conversion
-        
-        # Check if weekday
-        if now.weekday() >= 5:  # Saturday (5) or Sunday (6)
+        """
+        Determine whether the US stock market is currently open.
+
+        Uses the official America/New_York timezone and also displays
+        the equivalent local (West Africa Time) market opening time.
+
+        Example:
+            Wed Jul 15 • 09:30 AM ET / 02:30 PM WAT
+        """
+
+        # ----------------------------------------
+        # Current Times
+        # ----------------------------------------
+        ny_tz = ZoneInfo("America/New_York")
+        local_tz = ZoneInfo("Africa/Lagos")
+
+        ny_time = datetime.now(ny_tz)
+        local_time = ny_time.astimezone(local_tz)
+
+        # ----------------------------------------
+        # Today's Market Hours (New York Time)
+        # ----------------------------------------
+        market_open = ny_time.replace(
+            hour=9,
+            minute=30,
+            second=0,
+            microsecond=0
+        )
+
+        market_close = ny_time.replace(
+            hour=16,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+
+        # ----------------------------------------
+        # Weekend Handling
+        # ----------------------------------------
+        if ny_time.weekday() >= 5:
+
+            days_until_monday = 7 - ny_time.weekday()
+
+            next_open = (
+                ny_time + timedelta(days=days_until_monday)
+            ).replace(
+                hour=9,
+                minute=30,
+                second=0,
+                microsecond=0
+            )
+
+        # ----------------------------------------
+        # Market Currently Open
+        # ----------------------------------------
+        elif market_open <= ny_time < market_close:
+
             return {
-                'is_open': False,
-                'status': 'CLOSED (Weekend)',
-                'next_open': 'Monday 9:30 AM EST',
-                'current_time': now.strftime('%Y-%m-%d %H:%M:%S')
+                "is_open": True,
+                "status": "OPEN",
+                "hours": "9:30 AM – 4:00 PM ET",
+                "current_time": (
+                    f"{ny_time.strftime('%Y-%m-%d %I:%M:%S %p ET')} / "
+                    f"{local_time.strftime('%I:%M:%S %p WAT')}"
+                )
             }
-        
-        # Check market hours
-        if 9.5 <= est_time < 16:
-            return {
-                'is_open': True,
-                'status': 'OPEN',
-                'hours': '9:30 AM - 4:00 PM EST',
-                'current_time': now.strftime('%Y-%m-%d %H:%M:%S EST')
-            }
+
+        # ----------------------------------------
+        # Before Market Opens Today
+        # ----------------------------------------
+        elif ny_time < market_open:
+
+            next_open = market_open
+
+        # ----------------------------------------
+        # After Market Closes Today
+        # ----------------------------------------
         else:
-            return {
-                'is_open': False,
-                'status': 'CLOSED',
-                'next_open': 'Tomorrow 9:30 AM EST',
-                'current_time': now.strftime('%Y-%m-%d %H:%M:%S EST')
-            }
+
+            next_open = market_open + timedelta(days=1)
+
+            while next_open.weekday() >= 5:
+                next_open += timedelta(days=1)
+
+        # ----------------------------------------
+        # Convert Next Open to Local Time
+        # ----------------------------------------
+        next_open_local = next_open.astimezone(local_tz)
+
+        return {
+            "is_open": False,
+            "status": (
+                "CLOSED (Weekend)"
+                if ny_time.weekday() >= 5
+                else "CLOSED"
+            ),
+            "next_open": (
+                f"{next_open.strftime('%a %b %d • %I:%M %p ET')}"
+                f"\n({next_open_local.strftime('%I:%M %p %Z')})"
+            ),
+            "current_time": (
+                f"{ny_time.strftime('%Y-%m-%d %I:%M:%S %p ET')}"
+                f"\n({local_time.strftime('%I:%M:%S %p %Z')})"
+            )
+        }

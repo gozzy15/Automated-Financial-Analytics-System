@@ -132,6 +132,33 @@ class DatabaseHandler:
 
         return self.execute_query(query)
 
+    def get_last_database_update(self):
+        """
+        Returns the most recent Processing_Date
+        from the historical database.
+        """
+
+        query = """
+            SELECT MAX(Processing_Date) AS LastUpdate
+            FROM stock_prices
+        """
+
+        try:
+            result = self.execute_query(query)
+
+            if result.empty:
+                return None
+
+            return result.iloc[0]["LastUpdate"]
+
+        except Exception:
+
+            logger.exception(
+                "Failed to retrieve last database update."
+            )
+
+            return None
+
     def get_record_count(self):
         """
         Return total number of records.

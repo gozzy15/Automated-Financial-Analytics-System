@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import schedule
 import time
 import threading
@@ -12,10 +13,11 @@ from prediction_engine import FinancialPredictor
 from email_reporter import EmailReporter
 from utils.logger import logger
 import requests
+from utils.live_clock import display_live_clock
 
 # Page configuration
 st.set_page_config(
-    page_title="Financial Analytics Dashboard",
+    page_title="Financial Analytics System",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -33,6 +35,102 @@ class FinancialDashboard:
         self.predictor = FinancialPredictor()
         self.email_reporter = EmailReporter()
         self.scraper = FinancialScraper()
+
+    def format_database_update(self):
+        """
+        Format the last database refresh time
+        into a user-friendly string.
+        """
+
+        last_update = self.db_handler.get_last_database_update()
+
+        if not last_update:
+            return "No data available"
+
+        try:
+            # Processing_Date was stored as ISO format
+            update_time = datetime.fromisoformat(last_update)
+
+            # Treat stored timestamp as local (WAT) if it has no timezone
+            if update_time.tzinfo is None:
+                update_time = update_time.replace(
+                    tzinfo=ZoneInfo("Africa/Lagos")
+                )
+
+            now = datetime.now(ZoneInfo("Africa/Lagos"))
+
+            if update_time.date() == now.date():
+
+                return (
+                    f"Today • "
+                    f"{update_time.strftime('%I:%M %p')} WAT"
+                )
+
+            elif (now.date() - update_time.date()).days == 1:
+
+                return (
+                    f"Yesterday • "
+                    f"{update_time.strftime('%I:%M %p')} WAT"
+                )
+
+            else:
+
+                return update_time.strftime(
+                    "%a %b %d • %I:%M %p WAT"
+                )
+
+        except Exception:
+
+            logger.exception(
+                "Unable to format database update time."
+            )
+
+            return str(last_update)
+
+    def get_database_status(self):
+        """
+        Returns a status icon and a formatted
+        database refresh time.
+        """
+
+        last_update = self.db_handler.get_last_database_update()
+
+        if not last_update:
+            return "🔴", "No data available"
+
+        try:
+            update_time = datetime.fromisoformat(last_update)
+
+            if update_time.tzinfo is None:
+                update_time = update_time.replace(
+                    tzinfo=ZoneInfo("Africa/Lagos")
+                )
+
+            now = datetime.now(ZoneInfo("Africa/Lagos"))
+
+            days_old = (now.date() - update_time.date()).days
+
+            if days_old == 0:
+
+                status = "🟢"
+
+            elif days_old == 1:
+
+                status = "🟡"
+
+            else:
+
+                status = "🔴"
+
+            return status, self.format_database_update()
+
+        except Exception:
+
+            logger.exception(
+                "Unable to determine database status."
+            )
+
+            return "🔴", "Unknown"
     
     def display_header(self):
         """Display dashboard header"""
@@ -122,6 +220,7 @@ class FinancialDashboard:
             # Dashboard status indicator
             st.markdown("---")
             with st.expander("📊 Dashboard Status"):
+
                 # Check if Dash is running
                 try:
                     response = requests.get("http://localhost:8050", timeout=2)
@@ -138,6 +237,34 @@ class FinancialDashboard:
                     python dashboard.py
                     ```
                     """)
+
+            st.markdown("---")
+
+            update_info = self.format_database_update()
+
+            st.markdown(
+                "**📅 Last Database Refresh**"
+            )
+
+            st.caption(update_info)
+
+            from system_config import APP_NAME, APP_VERSION, AUTHOR, LINK
+
+            st.markdown("---")
+
+            st.markdown(
+                f"""
+                <div style="text-align:center; font-size:13px; color:#6c757d;">
+                    <strong>{APP_NAME}</strong><br>
+                    {APP_VERSION}<br>
+                    Built by <strong>{AUTHOR}</strong><br>
+                    <a href={LINK} target="_blank">
+                        View Source on GitHub
+                    </a>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
             
             return {
                 'start_date': start_date,
@@ -211,7 +338,7 @@ class FinancialDashboard:
     
     def display_metrics(self, tickers):
         """Display key metrics using get_latest_prices()"""
-        st.subheader("📈 Key Metrics")
+        st.subheader("📊 Latest Market Snapshot")
         
         try:
             # Get latest prices for all tickers at once
@@ -407,7 +534,7 @@ class FinancialDashboard:
                     st.metric("Current", f"${current_price:.2f}")
                 with col2:
                     st.metric(
-                        "Predicted", 
+                        "Predicted (1 week)", 
                         f"${predicted_price:.2f}",
                         f"{expected_return:.2f}%"
                     )
@@ -455,28 +582,110 @@ class FinancialDashboard:
             
     def display_live_data(self, tickers):
         """Display live market data"""
-        st.subheader("⚡ Live Market Data")
-        
+        st.markdown(
+            """
+            <h2 style="
+                text-align: center;
+                margin-bottom: 20px;
+                font-weight: bold;
+            ">
+                ⚡ Market Watch
+            </h2>
+            """,
+            unsafe_allow_html=True
+        )
+
         try:
             scraper = self.scraper
-            
+
             # Get market status
             market_status = scraper.get_market_status()
-            
+
+            # -----------------------------------
+            # Determine quote status
+            # -----------------------------------
+
+            if market_status["is_open"]:
+
+                live_icon = "🟢"
+                live_label = "Live Market"
+
+            elif "Weekend" in market_status["status"]:
+
+                live_icon = "⚫"
+                live_label = "Weekend Close"
+
+            else:
+
+                live_icon = "🟡"
+                live_label = "Last Market Close"
+
+            # -------------------------
+            # Data Freshness
+            # -------------------------
+
+            status_icon, database_update = self.get_database_status()
+
+            col1, col2, col3, col4 = st.columns(4)
+
+            with col1:
+
+                st.metric(
+                    "💰 Quote Feed",
+                    live_label
+                )
+
+            with col2:
+
+                st.metric(
+                    "🗄 Database",
+                    status_icon
+                )
+
+                st.caption(f"Updated: {database_update}")
+
+            with col3:
+
+                st.metric(
+                    "🤖 Prediction Engine",
+                    "READY"
+                )
+
+                st.caption("Using latest database")
+
+            with col4:
+
+                st.metric(
+                    "📈 Market",
+                    market_status["status"]
+                )
+
+                if market_status["is_open"]:
+
+                    st.caption("Trading session active")
+
+                else:
+
+                    st.caption("Awaiting next session")
+
+            st.divider()
+
+            display_live_clock()
+                 
             # Status indicator
-            col1, col2, col3 = st.columns(3)
+            col1, col2 = st.columns(2)
             with col1:
                 if market_status['is_open']:
+                    st.markdown("**Market Status**")
                     st.success(f"✅ {market_status['status']}")
                 else:
+                    st.markdown("**Market Status**")
                     st.warning(f"⏸️ {market_status['status']}")
             
             with col2:
-                st.metric("Current Time", market_status['current_time'])
-            
-            with col3:
                 if not market_status['is_open']:
-                    st.info(f"Next: {market_status['next_open']}")
+                    st.markdown("**Next Market Open**")
+                    st.info(market_status["next_open"])
             
             # Get live quotes
             st.subheader("💰 Live Quotes")
@@ -491,8 +700,17 @@ class FinancialDashboard:
                         
                         # Calculate change from open
                         change = 0
-                        if 'close' in data and 'open' in data and data['open'] > 0:
-                            change = ((data['close'] - data['open']) / data['open']) * 100
+
+                        if (
+                            "close" in data
+                            and "previous_close" in data
+                            and data["previous_close"] > 0
+                        ):
+
+                            change = (
+                                (data["close"] - data["previous_close"])
+                                / data["previous_close"]
+                            ) * 100
                         
                         st.metric(
                             label=ticker,
@@ -540,7 +758,7 @@ class FinancialDashboard:
         scraper = self.scraper
         
         # Schedule weekly scraping
-        schedule.every().monday.at("09:00").do(scraper.weekly_scrape_job)
+        schedule.every().monday.at("09:00").do(scraper.scheduled_scrape_job)
         
         # Schedule weekly reporting
         schedule.every().friday.at("17:00").do(self.email_reporter.generate_weekly_report)

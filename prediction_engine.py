@@ -71,6 +71,8 @@ class FinancialPredictor:
         # Get data from database
         # Fetch stock data for the given ticker from the database
         df = self.db_handler.get_stock_data(ticker)
+        # Sort into chronological order for feature engineering
+        df = df.sort_values("Date").reset_index(drop=True)
         try:
             if len(df) < 50:
                 logger.warning(
@@ -160,6 +162,10 @@ class FinancialPredictor:
             
             # Get latest data
             df = self.db_handler.get_stock_data(ticker)
+            # Sort into chronological order for feature engineering
+            df = df.sort_values("Date").reset_index(drop=True)
+            last_trading_date = pd.to_datetime(df['Date'].iloc[-1])
+            prediction_date = last_trading_date + pd.offsets.BusinessDay(days_ahead)
             
             if len(df) < 50:
                 logger.warning(
@@ -171,7 +177,10 @@ class FinancialPredictor:
                 
             
             # Prepare features for prediction
-            X, _, _ = self.prepare_features(df, forecast_days=days_ahead)
+            X, y, _ = self.prepare_features(
+                df,
+                forecast_days=days_ahead
+            )
             
             if len(X) == 0:
                 return None
@@ -195,21 +204,25 @@ class FinancialPredictor:
             
             # Calculate confidence interval (simplified)
             y_pred_all = model.predict(scaler.transform(X))
-            residuals = df['Close'].iloc[-len(y_pred_all):].values - y_pred_all
+            residuals = y.values - y_pred_all
             std_residuals = np.std(residuals)
             
             ci_lower = prediction - 1.96 * std_residuals
             ci_upper = prediction + 1.96 * std_residuals
             
+            current_price = float(df['Close'].iloc[-1])
             # Prediction payload returned to dashboard
             result = {
                 'ticker': ticker,
-                'prediction_date': (datetime.now() + timedelta(days=days_ahead)).strftime('%Y-%m-%d'),
+                'prediction_date': prediction_date.strftime('%Y-%m-%d'),
                 'predicted_close': float(prediction),
                 'ci_lower': float(ci_lower),
                 'ci_upper': float(ci_upper),
-                'current_price': float(df['Close'].iloc[-1]),
-                'expected_return': float((prediction - df['Close'].iloc[-1]) / df['Close'].iloc[-1] * 100),
+                'current_price': current_price,
+                'expected_return': float(
+                                        (prediction - current_price)
+                                        / current_price * 100
+                                    ),
                 'feature_importance': feature_importance.head(10).to_dict('records'),
                 'model_metrics': self.models[ticker]['metrics']
             }

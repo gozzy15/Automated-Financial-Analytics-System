@@ -1,0 +1,18 @@
+{
+  "current_price": 394.76,
+  "previous_close": 407.76,
+  "open": 404.61,
+  "day_high": 405.4,
+  "day_low": 391.3701,
+  "volume": 32685743,
+  "avg_volume": 53148093,
+  "market_cap": 1482609524736,
+  "bid": 390.0,
+  "ask": 416.75,
+  "bid_size": 2,
+  "ask_size": 1,
+  "last_update": "2026-07-14T08:58:40.384818",
+  "change": -13.0,
+  "change_percent": -3.18815,
+  "currency": "USD"
+}

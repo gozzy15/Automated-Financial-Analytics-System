@@ -5,7 +5,7 @@ from dash import dcc
 from dash import dash_table
 from datetime import datetime, timedelta
 
-from system_config import LIVE_UPDATE_SECONDS
+from system_config import LIVE_UPDATE_SECONDS, APP_NAME, APP_VERSION, AUTHOR, LINK
 
 def create_layout(
         tickers,
@@ -1192,9 +1192,17 @@ def create_layout(
         dbc.Row([
             dbc.Col([
                 html.Hr(),
-                html.P("Financial Analytics Dashboard • Last Updated: " + 
-                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    className="text-center text-muted small")
+                html.P([
+                    f"{APP_NAME} • Built with Dash, Plotly & Python • {APP_VERSION} • Built by {AUTHOR}",
+                    html.Br(),
+                    html.A(
+                        "View Source on GitHub",
+                        href=LINK,
+                        target="_blank",
+                        style={"textDecoration": "none"}
+                    )
+                ],
+                className="text-center text-muted small")
             ])
         ], className="mt-4")
     ], fluid=True,

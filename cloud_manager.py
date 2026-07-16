@@ -186,3 +186,28 @@ class GoogleDriveHandler:
                 folder_id
             )
             raise
+
+    def get_last_database_update(self):
+        """
+        Returns the most recent Processing_Date
+        stored in the historical database.
+        """
+
+        query = """
+            SELECT MAX(Processing_Date) AS LastUpdate
+            FROM stock_prices
+        """
+
+        try:
+            result = self.execute_query(query)
+
+            if result.empty:
+                return None
+
+            return result.iloc[0]["LastUpdate"]
+
+        except Exception:
+            logger.exception(
+                "Failed to retrieve last database update."
+            )
+            return None

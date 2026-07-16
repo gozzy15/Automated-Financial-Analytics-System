@@ -721,23 +721,26 @@ Concise overview of the selected stock, including key performance metrics, marke
 
 The Financial Analytics System was designed with scalability in mind. Although the current implementation provides a complete end-to-end financial analytics workflow, several enhancements can be incorporated in future versions to improve functionality, performance, and user experience.
 
-### Planned Enhancements
+## Planned Enhancements
 
-* Expand market coverage to include international stock exchanges and cryptocurrency markets.
-* Integrate additional financial data providers for improved data reliability and redundancy.
-* Support real-time streaming using WebSockets instead of periodic polling.
-* Incorporate advanced machine learning models such as XGBoost, LightGBM, and Long Short-Term Memory (LSTM) neural networks for improved forecasting accuracy.
-* Implement automated hyperparameter tuning and model performance comparison.
-* Add portfolio optimization and risk management analytics based on Modern Portfolio Theory.
-* Introduce sentiment analysis using financial news articles and social media data.
-* Develop anomaly detection models for identifying unusual market behavior.
-* Enhance the dashboard with additional interactive visualizations and customizable layouts.
-* Provide user authentication and role-based access control for multi-user deployments.
-* Containerize the application using Docker for simplified deployment.
-* Deploy the platform to cloud services such as AWS, Microsoft Azure, or Google Cloud Platform.
-* Build a REST API that allows external applications to consume financial data, analytics, and prediction services.
-* Implement scheduled model retraining to continuously improve prediction quality as new market data becomes available.
-* Add automated monitoring, alerting, and performance dashboards for production environments.
+- Expand market coverage to include international stock exchanges and cryptocurrency markets.
+- Integrate additional financial data providers for improved data reliability and redundancy.
+- Support real-time streaming using WebSockets instead of periodic polling.
+- Improve forecasting by predicting future returns rather than absolute prices, enabling more robust and scale-independent machine learning models.
+- Enrich feature engineering with additional technical indicators such as MACD, Bollinger Bands, Exponential Moving Averages (EMA), Average True Range (ATR), stochastic oscillators, momentum indicators, and volatility-based features.
+- Incorporate advanced machine learning models such as XGBoost, LightGBM, Gradient Boosting, and Long Short-Term Memory (LSTM) neural networks for improved forecasting accuracy.
+- Implement automated hyperparameter optimization together with systematic model benchmarking and performance comparison across multiple forecasting algorithms.
+- Evaluate forecasting performance using time-series cross-validation and additional metrics such as Mean Absolute Percentage Error (MAPE), R², and directional accuracy.
+- Add portfolio optimization and risk management analytics based on Modern Portfolio Theory.
+- Introduce sentiment analysis using financial news articles and social media data.
+- Develop anomaly detection models for identifying unusual market behavior.
+- Enhance the dashboard with additional interactive visualizations and customizable layouts.
+- Provide user authentication and role-based access control for multi-user deployments.
+- Containerize the application using Docker for simplified deployment.
+- Deploy the platform to cloud services such as Amazon Web Services (AWS), Microsoft Azure, or Google Cloud Platform (GCP).
+- Build a REST API that allows external applications to consume financial data, analytics, and prediction services.
+- Implement scheduled model retraining and continuous performance monitoring to adapt forecasting models as new market data becomes available.
+- Add automated monitoring, alerting, logging, and production performance dashboards for operational visibility.
 
 These enhancements would transform the project from a desktop analytics platform into a scalable enterprise-grade financial analytics solution suitable for larger datasets, multiple users, and production deployments.
 

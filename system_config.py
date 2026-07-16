@@ -61,7 +61,7 @@ MODELS_PATH = os.path.join(
 
 # Dash Configuration
 DASH_PORT = 8050
-DASH_DEBUG = True
+DASH_DEBUG = False
 
 # Logging Configuration
 LOG_FOLDER = os.path.join(
@@ -82,3 +82,9 @@ DEFAULT_MODEL = os.getenv(
     "DEFAULT_MODEL",
     "Random Forest"
 )
+
+# Profile
+APP_NAME = "Financial Analytics Dashboard"
+APP_VERSION = "1.0.0"
+AUTHOR = "Chigozie Nnoli"
+LINK = "https://github.com/gozzy15/Automated-Financial-Analytics-System"
