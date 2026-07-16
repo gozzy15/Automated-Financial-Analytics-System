@@ -13,6 +13,8 @@ class GoogleDriveHandler:
     def __init__(self):
         self.creds = None
         self.service = None
+        self.enabled = False
+
         self._authenticate()
     
     def _authenticate(self):
@@ -45,16 +47,23 @@ class GoogleDriveHandler:
                     pickle.dump(self.creds, token)
             
             self.service = build('drive', 'v3', credentials=self.creds)
+            self.enabled = True
 
             logger.info(
                 "Google Drive authentication successful."
             )
 
         except Exception:
-            logger.exception(
-                "Failed to authenticate with Google Drive API."
+
+            logger.warning(
+                "Google Drive unavailable. Running without cloud synchronization."
             )
-            raise
+
+            self.creds = None
+            self.service = None
+            self.enabled = False
+
+            return
     
     def upload_file(
         self,
@@ -72,6 +81,14 @@ class GoogleDriveHandler:
         str
             Uploaded file ID.
         """
+
+        if not self.enabled:
+
+            logger.info(
+                "Google Drive disabled. Skipping upload."
+            )
+
+            return None
 
         logger.info(
             "Uploading %s to Google Drive.",
@@ -136,6 +153,14 @@ class GoogleDriveHandler:
         -------
         None
         """
+        if not self.enabled:
+
+            logger.info(
+                "Google Drive disabled. Skipping upload."
+            )
+
+            return None
+
         logger.info(
             "Downloading file %s.",
             file_id
@@ -163,6 +188,14 @@ class GoogleDriveHandler:
     ):
         """List files in Google Drive folder"""
 
+        if not self.enabled:
+
+            logger.info(
+                "Google Drive disabled. Skipping upload."
+            )
+
+            return None
+
         try:
             folder_id = folder_id or GDRIVE_FOLDER_ID
 
@@ -186,28 +219,3 @@ class GoogleDriveHandler:
                 folder_id
             )
             raise
-
-    def get_last_database_update(self):
-        """
-        Returns the most recent Processing_Date
-        stored in the historical database.
-        """
-
-        query = """
-            SELECT MAX(Processing_Date) AS LastUpdate
-            FROM stock_prices
-        """
-
-        try:
-            result = self.execute_query(query)
-
-            if result.empty:
-                return None
-
-            return result.iloc[0]["LastUpdate"]
-
-        except Exception:
-            logger.exception(
-                "Failed to retrieve last database update."
-            )
-            return None
