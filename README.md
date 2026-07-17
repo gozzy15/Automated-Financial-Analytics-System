@@ -5,6 +5,16 @@ A comprehensive financial analytics platform that automates stock market data co
 
 The system combines data engineering, data analytics, machine learning, and business intelligence into a single end-to-end financial analysis workflow.
 
+## 🚀 Live Demo
+
+**Try the deployed application here:**
+
+**🌐 Streamlit App:** https://financial-analytics-dashboard-gz.streamlit.app
+
+No installation is required—simply open the link in your browser to explore the Financial Analytics System.
+![Streamlit App](assets/streamlit_hosted_app.png)
+
+
 
 ## Project Overview
 
