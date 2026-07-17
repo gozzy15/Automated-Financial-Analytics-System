@@ -631,9 +631,11 @@ class FinancialDashboard:
             with col1:
 
                 st.metric(
-                    "💰 Quote Feed",
-                    live_label
+                    "💰 Quote Feed", 
+                    live_icon                
                 )
+                
+                st.caption(live_label)
 
             with col2:
 
