@@ -41,7 +41,7 @@ openpyxl==3.1.5
 requests==2.32.4
 
 # Production Server
-gunicorn==23.0.0
+# gunicorn==23.0.0
 
 # Visualization
 matplotlib==3.10.5
