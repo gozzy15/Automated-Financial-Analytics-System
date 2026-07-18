@@ -3,6 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
+import re
 from utils.logger import logger
 import os
 from datetime import datetime, timedelta
@@ -190,13 +191,39 @@ class EmailReporter:
         
         return html_content
     
-    def send_email(self, subject: str, html_content: str, attachments: list[str]):
+    def send_email(
+        self,
+        subject: str,
+        html_content: str,
+        attachments: list[str],
+        recipient_email: str = None
+    ):
         """Send email with attachments"""
         try:
             # Create message
             msg = MIMEMultipart()
             msg['From'] = self.sender
-            msg['To'] = ', '.join(self.recipients)
+            # Use custom recipient if supplied; otherwise use configured recipients
+            if recipient_email:
+
+                email_pattern = r"^[^@]+@[^@]+\.[^@]+$"
+
+                if not re.match(email_pattern, recipient_email):
+
+                    logger.error(
+                        "Invalid recipient email: %s",
+                        recipient_email
+                    )
+
+                    return False
+
+                recipients = [recipient_email]
+
+            else:
+
+                recipients = self.recipients
+
+            msg["To"] = ", ".join(recipients)
             msg['Subject'] = subject
             
             # Add HTML content
@@ -267,9 +294,16 @@ class EmailReporter:
                     "Sending email..."
                 )
 
-                server.send_message(msg)
+                server.sendmail(
+                    self.sender,
+                    recipients,
+                    msg.as_string()
+                )
             
-            logger.info("Email sent successfully to %s recipients", len(self.recipients))
+            logger.info(
+                "Email sent successfully to %s recipient(s).",
+                len(recipients)
+            )
             logger.info(
                 "Weekly report completed successfully."
             )
@@ -284,7 +318,10 @@ class EmailReporter:
             )
             return False
     
-    def generate_weekly_report(self):
+    def generate_weekly_report(
+        self,
+        recipient_email=None
+    ):
         """Generate reports and send email"""
         report_time = datetime.now()
 
@@ -415,5 +452,6 @@ class EmailReporter:
         return self.send_email(
             subject,
             html_content,
-            attachments
+            attachments,
+            recipient_email
         )

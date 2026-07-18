@@ -186,9 +186,23 @@ class FinancialDashboard:
                 #if st.button("🔄", help="Refresh Data", use_container_width=True):
                     #self.refresh_data()"""
             
+            # Email report
+            st.markdown("#### 📧 Email Report")
+
+            recipient_email = st.text_input(
+                "Recipient Email",
+                placeholder="Leave blank to use the default configured email"
+            )
+
             with col1:
-                if st.button("📧", help="Send Weekly Report", use_container_width=True):
-                    self.send_report()
+
+                if st.button(
+                    "📧",
+                    help="Send Weekly Report",
+                    use_container_width=True
+                ):
+
+                    self.send_report(recipient_email.strip())
             
             with col2:
                 if st.button("🤖", help="Run Predictions", use_container_width=True):
@@ -294,20 +308,43 @@ class FinancialDashboard:
             except Exception as e:
                 st.error(f"Error refreshing data: {e}")"""
     
-    def send_report(self):
-        """Send weekly report"""
+    def send_report(self, recipient_email: str = ""):
+        """Generate and send weekly report"""
+
         with st.spinner("Generating and sending report..."):
+
             try:
-                success = self.email_reporter.generate_weekly_report()
+
+                success = self.email_reporter.generate_weekly_report(
+                    recipient_email=recipient_email
+                )
+
                 if success:
-                    st.success("Weekly report sent successfully!")
+
+                    if recipient_email:
+
+                        st.success(
+                            f"Weekly report sent successfully to "
+                            f"{recipient_email}!"
+                        )
+
+                    else:
+
+                        st.success(
+                            "Weekly report sent successfully "
+                            "using the default email address."
+                        )
+
                 else:
-                    st.error("Failed to send report")
+
+                    st.error("Failed to send report.")
 
             except Exception:
+
                 logger.exception(
                     "Failed to generate weekly report."
                 )
+
                 st.error(
                     "Failed to send report."
                 )
