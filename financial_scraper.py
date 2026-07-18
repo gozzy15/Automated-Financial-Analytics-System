@@ -136,16 +136,109 @@ class FinancialScraper:
                 ticker
             )
             return pd.DataFrame()
+        
+    def _get_latest_market_data(self, stock):
+        """
+        Retrieve the latest available market data using
+        multiple fallback strategies.
+        """
+
+        # -------------------------------
+        # Strategy 1
+        # fast_info
+        # -------------------------------
+        try:
+
+            fast = stock.fast_info
+
+            return {
+
+                "open": float(fast.get("open") or 0),
+                "high": float(fast.get("dayHigh") or 0),
+                "low": float(fast.get("dayLow") or 0),
+                "close": float(fast.get("lastPrice") or 0),
+                "volume": int(fast.get("lastVolume") or 0),
+                "previous_close": float(
+                    fast.get("previousClose") or 0
+                )
+
+            }
+
+        except Exception:
+
+            logger.warning(
+                "fast_info unavailable. Falling back to history()."
+            )
+
+        # -------------------------------
+        # Strategy 2
+        # Today's history
+        # -------------------------------
+        try:
+
+            hist = stock.history(period="1d")
+
+            if not hist.empty:
+
+                latest = hist.iloc[-1]
+
+                return {
+
+                    "open": float(latest["Open"]),
+                    "high": float(latest["High"]),
+                    "low": float(latest["Low"]),
+                    "close": float(latest["Close"]),
+                    "volume": int(latest["Volume"]),
+                    "previous_close": float(latest["Close"])
+
+                }
+
+        except Exception:
+
+            logger.warning(
+                "1-day history unavailable."
+            )
+
+        # -------------------------------
+        # Strategy 3
+        # Last 5 days
+        # -------------------------------
+        try:
+
+            hist = stock.history(period="5d")
+
+            if not hist.empty:
+
+                latest = hist.iloc[-1]
+
+                return {
+
+                    "open": float(latest["Open"]),
+                    "high": float(latest["High"]),
+                    "low": float(latest["Low"]),
+                    "close": float(latest["Close"]),
+                    "volume": int(latest["Volume"]),
+                    "previous_close": float(latest["Close"])
+
+                }
+
+        except Exception:
+
+            logger.warning(
+                "5-day history unavailable."
+            )
+
+        return None
     
     def get_realtime_tickers_data(
-        self,
-        tickers: List[str] = None
-    ) -> Dict:
+    self,
+    tickers: List[str] = None
+) -> Dict:
         """
         Retrieve live market data for one or more tickers.
 
-        Uses the latest available intraday candle from Yahoo Finance.
-        This approach is more stable than relying on fast_info.
+        Tries multiple Yahoo Finance history endpoints before
+        reporting failure.
         """
 
         if tickers is None:
@@ -164,31 +257,90 @@ class FinancialScraper:
 
                 stock = yf.Ticker(ticker)
 
-                history = stock.history(
-                    period="1d",
-                    interval="1m",
-                    auto_adjust=False
-                )
+                history = None
 
-                if history.empty:
+                # ---------------------------------
+                # Strategy 1
+                # Live 1-minute candles
+                # ---------------------------------
+                try:
+
+                    history = stock.history(
+                        period="1d",
+                        interval="1m",
+                        auto_adjust=False
+                    )
+
+                except Exception:
 
                     logger.warning(
-                        "No live market data available for %s",
+                        "1-minute data unavailable for %s.",
+                        ticker
+                    )
+
+                # ---------------------------------
+                # Strategy 2
+                # Daily candle
+                # ---------------------------------
+                if history is None or history.empty:
+
+                    try:
+
+                        history = stock.history(
+                            period="1d",
+                            auto_adjust=False
+                        )
+
+                    except Exception:
+
+                        logger.warning(
+                            "Daily history unavailable for %s.",
+                            ticker
+                        )
+
+                # ---------------------------------
+                # Strategy 3
+                # Five-day history
+                # ---------------------------------
+                if history is None or history.empty:
+
+                    try:
+
+                        history = stock.history(
+                            period="5d",
+                            auto_adjust=False
+                        )
+
+                    except Exception:
+
+                        logger.warning(
+                            "5-day history unavailable for %s.",
+                            ticker
+                        )
+
+                # ---------------------------------
+                # Final failure
+                # ---------------------------------
+                if history is None or history.empty:
+
+                    logger.warning(
+                        "No market data available for %s.",
                         ticker
                     )
 
                     realtime_data[ticker] = {
+
                         "error": "No market data available."
+
                     }
 
                     continue
 
                 latest = history.iloc[-1]
 
-                previous_close = 0.0
-
-                if len(history) > 1:
-                    previous_close = float(history.iloc[-2]["Close"])
+                previous_close = float(
+                    history.iloc[-2]["Close"]
+                ) if len(history) > 1 else float(latest["Close"])
 
                 realtime_data[ticker] = {
 
@@ -220,7 +372,9 @@ class FinancialScraper:
                 )
 
                 realtime_data[ticker] = {
+
                     "error": "Unable to retrieve market data."
+
                 }
 
         return realtime_data
