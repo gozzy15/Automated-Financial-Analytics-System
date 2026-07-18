@@ -1,5 +1,4 @@
 # Automated-Financial-Analytics-System<br>
-![Dashboard Overview](assets/dashboard_overview.png)
 
 A comprehensive financial analytics platform that automates stock market data collection, ETL processing, machine learning-based price prediction, interactive dashboard visualization, automated reporting, Google Drive integration, and email-based report distribution.
 
@@ -7,12 +6,26 @@ The system combines data engineering, data analytics, machine learning, and busi
 
 ## 🚀 Live Demo
 
-**Try the deployed application here:**
+Explore the Financial Analytics System through either of the deployed web applications—no installation required.
 
-**🌐 Streamlit App:** https://financial-analytics-dashboard-gz.streamlit.app
+### 🌐 Streamlit Dashboard
 
-No installation is required—simply open the link in your browser to explore the Financial Analytics System.
+Interactive analytics dashboard built with Streamlit.
+
+**Live App:** https://financial-analytics-dashboard-gz.streamlit.app
+
 ![Streamlit App](assets/streamlit_hosted_app.png)
+
+---
+
+### 📊 Dash Dashboard
+
+Interactive analytics dashboard built with Dash and Plotly.
+
+**Live App:** https://financial-analytics-dashboard-4gyy.onrender.com
+
+![Dash App](assets/dashboard_overview_hosted.png)
+
 
 
 
