@@ -1,7 +1,6 @@
 import sqlite3
 import pandas as pd
 import os
-
 from datetime import datetime
 from system_config import DB_PATH, DEFAULT_MODEL, REPORTS_PATH
 from utils.logger import logger

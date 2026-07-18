@@ -4,6 +4,7 @@ A comprehensive financial analytics platform that automates stock market data co
 
 The system combines data engineering, data analytics, machine learning, and business intelligence into a single end-to-end financial analysis workflow.
 
+
 ## 🚀 Live Demo
 
 Explore the Financial Analytics System through either of the deployed web applications—no installation required.
@@ -27,6 +28,19 @@ Interactive analytics dashboard built with Dash and Plotly.
 ![Dash App](assets/dashboard_overview_hosted.png)
 
 
+## 📚 Table of Contents
+
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
+- [System Architecture](#system-architecture)
+- [Project Structure](#project-structure)
+- [Technologies Used](#technologies-used)
+- [Installation & Setup](#installation--setup)
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+- [Future Improvements](#future-improvements)
+- [Acknowledgements](#acknowledgements)
+- [Contact](#contact)
 
 
 ## Project Overview
@@ -809,6 +823,7 @@ If you have any questions, suggestions, or would like to discuss this project, f
 * GitHub: https://github.com/gozzy15
 * LinkedIn: https://www.linkedin.com/in/chigozie-nnoli
 * Email: [nnoligozie@gmail.com](mailto:nnoligozie@gmail.com)
+* Portfolio: https://gozzydanalyst.my.canva.site/
 
 I welcome feedback, collaboration opportunities, and discussions related to Data Analytics, Data Science, Machine Learning, Financial Analytics, and Python development.
 
