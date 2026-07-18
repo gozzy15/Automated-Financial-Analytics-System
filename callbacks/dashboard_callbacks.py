@@ -2,6 +2,8 @@ import pandas as pd
 from dash import Input, Output, State, html, dcc
 import dash_bootstrap_components as dbc
 from datetime import datetime
+from zoneinfo import ZoneInfo
+from system_config import TIMEZONE
 import plotly.graph_objects as go
 from financial_scraper import FinancialScraper
 
@@ -652,10 +654,15 @@ def register_dashboard_callbacks(
         Output("current-time", "children"),
         Input("clock-interval", "n_intervals")
     )
-
     def update_clock(n):
 
-        return datetime.now().strftime("%A, %d %B %Y  |  %I:%M:%S %p")
+        nigeria_time = datetime.now(
+            ZoneInfo(TIMEZONE)
+        )
+
+        return nigeria_time.strftime(
+            "%A, %d %B %Y  |  %I:%M:%S %p"
+        )
     
     @app.callback(
 

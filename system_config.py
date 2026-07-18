@@ -88,3 +88,6 @@ APP_NAME = "Financial Analytics Dashboard"
 APP_VERSION = "1.0.0"
 AUTHOR = "Chigozie Nnoli"
 LINK = "https://github.com/gozzy15/Automated-Financial-Analytics-System"
+
+# Time Zone
+TIMEZONE = "Africa/Lagos"
