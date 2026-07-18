@@ -137,12 +137,15 @@ class FinancialScraper:
             )
             return pd.DataFrame()
     
-    def get_realtime_tickers_data(self, tickers: List[str] = None) -> Dict:
+    def get_realtime_tickers_data(
+        self,
+        tickers: List[str] = None
+    ) -> Dict:
         """
-        Retrieve the latest available market data for multiple tickers.
+        Retrieve live market data for one or more tickers.
 
-        Uses Ticker.history() instead of yf.download() because it is
-        considerably more reliable for dashboard applications.
+        Uses the latest available intraday candle from Yahoo Finance.
+        This approach is more stable than relying on fast_info.
         """
 
         if tickers is None:
@@ -161,25 +164,47 @@ class FinancialScraper:
 
                 stock = yf.Ticker(ticker)
 
-                fast = stock.fast_info
+                history = stock.history(
+                    period="1d",
+                    interval="1m",
+                    auto_adjust=False
+                )
+
+                if history.empty:
+
+                    logger.warning(
+                        "No live market data available for %s",
+                        ticker
+                    )
+
+                    realtime_data[ticker] = {
+                        "error": "No market data available."
+                    }
+
+                    continue
+
+                latest = history.iloc[-1]
+
+                previous_close = 0.0
+
+                if len(history) > 1:
+                    previous_close = float(history.iloc[-2]["Close"])
 
                 realtime_data[ticker] = {
 
                     "timestamp": datetime.now().isoformat(),
 
-                    "open": float(fast.get("open") or 0),
+                    "open": float(latest["Open"]),
 
-                    "high": float(fast.get("dayHigh") or 0),
+                    "high": float(latest["High"]),
 
-                    "low": float(fast.get("dayLow") or 0),
+                    "low": float(latest["Low"]),
 
-                    "close": float(fast.get("lastPrice") or 0),
+                    "close": float(latest["Close"]),
 
-                    "volume": int(fast.get("lastVolume") or 0),
+                    "volume": int(latest["Volume"]),
 
-                    "previous_close": float(
-                        fast.get("previousClose") or 0
-                    ),
+                    "previous_close": previous_close,
 
                     "last_updated": datetime.now().strftime(
                         "%Y-%m-%d %H:%M:%S"
@@ -187,7 +212,7 @@ class FinancialScraper:
 
                 }
 
-            except Exception as e:
+            except Exception:
 
                 logger.exception(
                     "Unable to retrieve live quote for %s",
@@ -195,7 +220,7 @@ class FinancialScraper:
                 )
 
                 realtime_data[ticker] = {
-                    "error": str(e)
+                    "error": "Unable to retrieve market data."
                 }
 
         return realtime_data
