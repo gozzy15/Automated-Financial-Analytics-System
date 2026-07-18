@@ -138,8 +138,18 @@ class FinancialPredictor:
             
             # Save to file
             # Save trained model and scaler to disk for later use (no need to retrain)
-            joblib.dump(model, f'{MODELS_PATH}/{ticker}_model.pkl')
-            joblib.dump(scaler, f'{MODELS_PATH}/{ticker}_scaler.pkl')
+            model_path = os.path.join(
+                MODELS_PATH,
+                f"{ticker}_model.pkl"
+            )
+
+            scaler_path = os.path.join(
+                MODELS_PATH,
+                f"{ticker}_scaler.pkl"
+            )
+
+            joblib.dump(model, model_path)
+            joblib.dump(scaler, scaler_path)
             
             return self.models[ticker]
         

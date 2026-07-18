@@ -242,11 +242,19 @@ class FinancialDashboard:
 
             update_info = self.format_database_update()
 
-            st.markdown(
-                "**📅 Last Database Refresh**"
-            )
+            ticker_count = len(self.db_handler.get_available_tickers())
+
+            record_count = self.db_handler.get_total_record_count()
+
+            st.markdown("### 🗄 Database")
+
+            st.caption("**Last Refresh**")
 
             st.caption(update_info)
+
+            st.caption(f"📈 Stocks: {ticker_count}")
+
+            st.caption(f"🗃 Records: {record_count:,}")
 
             from system_config import APP_NAME, APP_VERSION, AUTHOR, LINK
 
@@ -657,18 +665,23 @@ class FinancialDashboard:
 
             with col4:
 
-                st.metric(
-                    "📈 Market",
-                    market_status["status"]
-                )
-
                 if market_status["is_open"]:
+
+                    st.metric(
+                        "📈 Market",
+                        "OPEN"
+                    )
 
                     st.caption("Trading session active")
 
                 else:
 
-                    st.caption("Awaiting next session")
+                    st.metric(
+                        "📈 Market",
+                        "CLOSED"
+                    )
+
+                    st.caption(market_status["status"])
 
             st.divider()
 

@@ -433,3 +433,17 @@ class DatabaseHandler:
             )
 
             raise
+
+    def get_total_record_count(self):
+        """
+        Return the total number of records in the stock_prices table.
+        """
+
+        query = """
+            SELECT COUNT(*) AS TotalRecords
+            FROM stock_prices
+        """
+
+        result = self.execute_query(query)
+
+        return int(result.iloc[0]["TotalRecords"])
