@@ -202,7 +202,7 @@ class FinancialDashboard:
                 # Try modern link_button (Streamlit 1.25+)
                 st.link_button(
                     "🌐 Open Advanced Dashboard",
-                    "http://localhost:8050",
+                    "https://financial-analytics-dashboard-4gyy.onrender.com/",
                     use_container_width=True,
                     help="Opens the advanced Dash dashboard in a new tab"
                 )
@@ -212,7 +212,7 @@ class FinancialDashboard:
                     # JavaScript to open in new tab
                     js = """
                     <script>
-                    window.open('http://localhost:8050', '_blank').focus();
+                    window.open('https://financial-analytics-dashboard-4gyy.onrender.com/', '_blank').focus();
                     </script>
                     """
                     st.components.v1.html(js, height=0)
@@ -223,10 +223,10 @@ class FinancialDashboard:
 
                 # Check if Dash is running
                 try:
-                    response = requests.get("http://localhost:8050", timeout=2)
+                    response = requests.get("https://financial-analytics-dashboard-4gyy.onrender.com/", timeout=2)
                     if response.status_code == 200:
                         st.success("✅ Dash dashboard is running")
-                        st.markdown("**Access:** http://localhost:8050")
+                        st.markdown("**Access:** https://financial-analytics-dashboard-4gyy.onrender.com/")
                     else:
                         st.warning("⚠️ Dash dashboard might not be running")
                 except Exception:
@@ -234,7 +234,7 @@ class FinancialDashboard:
                     st.markdown("""
                     To start the advanced dashboard:
                     ```
-                    python dashboard.py
+                    https://financial-analytics-dashboard-4gyy.onrender.com/
                     ```
                     """)
 
@@ -634,7 +634,7 @@ class FinancialDashboard:
                     "💰 Quote Feed", 
                     live_icon                
                 )
-                
+
                 st.caption(live_label)
 
             with col2:
