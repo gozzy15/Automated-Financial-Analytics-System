@@ -134,11 +134,11 @@ class FinancialDashboard:
     
     def display_header(self):
         """Display dashboard header"""
-        col1, col2, col3 = st.columns([1, 2, 1])
-        
-        with col2:
-            st.title("📊 Financial Analytics Dashboard")
-            st.markdown("---")
+        st.markdown(
+            "<h1 style='text-align: center;'>📊 Financial Analytics Dashboard</h1>",
+            unsafe_allow_html=True
+        )
+        st.markdown("---")
     
     def display_sidebar(self):
         """Display sidebar with filters and controls"""
