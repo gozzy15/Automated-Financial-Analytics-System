@@ -358,7 +358,7 @@ class FinancialScraper:
 
                     "previous_close": previous_close,
 
-                    "last_updated": datetime.now().strftime(
+                    "last_updated": datetime.now("Africa/Lagos").strftime(
                         "%Y-%m-%d %H:%M:%S"
                     )
 
