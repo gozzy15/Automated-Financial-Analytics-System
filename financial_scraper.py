@@ -342,6 +342,8 @@ class FinancialScraper:
                     history.iloc[-2]["Close"]
                 ) if len(history) > 1 else float(latest["Close"])
 
+                local_tz = ZoneInfo("Africa/Lagos")
+
                 realtime_data[ticker] = {
 
                     "timestamp": datetime.now().isoformat(),
@@ -358,7 +360,7 @@ class FinancialScraper:
 
                     "previous_close": previous_close,
 
-                    "last_updated": datetime.now("Africa/Lagos").strftime(
+                    "last_updated": datetime.now(local_tz).strftime(
                         "%Y-%m-%d %H:%M:%S"
                     )
 
