@@ -77,21 +77,28 @@ h1,h2,h3,h4,h5,h6{
 
 .metric-card{
 
-    background:white;
+    border:none;
 
-    border-radius:18px;
+    border-radius:16px;
 
-    padding:15px;
+    /*background:white;*/
 
-    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    box-shadow:
+        0 4px 14px rgba(0,0,0,.08);
 
-    transition:.3s;
+    transition:
+        transform .25s ease,
+        
+        box-shadow .25s ease;
 
 }
 
 .metric-card:hover{
 
-    transform:translateY(-5px);
+    transform:translateY(-4px);
+
+    box-shadow:
+        0 10px 28px rgba(0,0,0,.15);
 
 }
 
@@ -107,19 +114,29 @@ h1,h2,h3,h4,h5,h6{
 
 .metric-title{
 
-    color:#777;
-
-    font-size:15px;
-
     text-align:center;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#6c757d;
+
+    letter-spacing:.8px;
+
+    margin-bottom:12px;
 
 }
 
 .metric-footer{
 
+    text-align:center;
+
     color:#999;
 
-    text-align:center;
+    font-size:13px;
+
+    margin-top:8px;
 
 }
 
@@ -222,5 +239,138 @@ h1,h2,h3,h4,h5,h6{
 .btn:hover{
 
     transform:translateY(-2px);
+
+}
+
+/* ===========================
+   Sticky KPI Cards
+=========================== */
+
+/* ===========================
+   Sticky KPI Cards
+=========================== */
+
+#sticky-kpi-container{
+
+    position: sticky;
+
+    top: 12px;
+
+    z-index: 1100;
+
+    /*background: rgba(255,255,255,0.97);*/
+
+    backdrop-filter: blur(12px);
+
+    border-radius: 16px;
+
+    padding:10px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.10);
+
+    transition:
+        all .30s ease;
+
+}
+
+/* Smooth KPI animation */
+
+#sticky-kpi-container,
+#sticky-kpi-container .metric-card,
+#sticky-kpi-container .card-body,
+#sticky-kpi-container h1,
+#sticky-kpi-container h4,
+#sticky-kpi-container h5,
+#sticky-kpi-container h6,
+#sticky-kpi-container p{
+
+    transition: all .25s ease;
+
+}
+
+/* Shrink card padding */
+
+#sticky-kpi-container.kpi-shrink .card-body{
+
+    padding:6px 10px !important;
+
+}
+
+/* Smaller KPI numbers */
+
+#sticky-kpi-container.kpi-shrink h1{
+
+    font-size:28px !important;
+
+}
+
+#sticky-kpi-container.kpi-shrink h4{
+
+    font-size:18px !important;
+
+}
+
+#sticky-kpi-container.kpi-shrink h5{
+
+    font-size:12px !important;
+
+}
+
+#sticky-kpi-container.kpi-shrink h6{
+
+    font-size:11px !important;
+
+    margin-bottom:2px;
+
+}
+
+#sticky-kpi-container.kpi-shrink p{
+
+    font-size:10px !important;
+
+    margin-bottom:0;
+
+}
+
+#sticky-kpi-container.kpi-shrink{
+
+    box-shadow:0 2px 6px rgba(0,0,0,.10);
+
+}
+
+/* Hide KPI footer text when sticky bar is compact */
+
+#sticky-kpi-container.kpi-shrink .metric-footer{
+
+    display:none;
+
+}
+
+#sticky-kpi-container.kpi-shrink{
+
+    padding:6px 10px;
+
+}
+
+#sticky-kpi-container.kpi-shrink .metric-card{
+
+    margin-bottom:0;
+
+}
+
+/* Compact spacing between KPI cards */
+
+#sticky-kpi-container.kpi-shrink #kpi-row{
+
+    --bs-gutter-x: .6rem;
+
+}
+
+#sticky-kpi-container.kpi-shrink .metric-card{
+
+    border-radius:10px;
 
 }

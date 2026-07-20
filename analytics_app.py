@@ -146,6 +146,7 @@ class FinancialDashboard:
             st.header("⚙️ Controls")
             
             # Date range selector
+            st.markdown("---")
             st.subheader("Date Range")
             col1, col2 = st.columns(2)
             with col1:
@@ -153,14 +154,15 @@ class FinancialDashboard:
             with col2:
                 end_date = st.date_input("End", datetime.now())
             
+            
             # Ticker selector
-            st.subheader("Ticker Selection")
+            st.subheader("Stock Selection")
             tickers = self.db_handler.execute_query(
                 "SELECT DISTINCT Ticker FROM stock_prices ORDER BY Ticker"
             )['Ticker'].tolist()
             
             selected_tickers = st.multiselect(
-                "Select Tickers",
+                "Choose one or more stocks.",
                 tickers,
                 default=tickers[:3] if tickers else []
             )
@@ -168,7 +170,7 @@ class FinancialDashboard:
             # Analysis type
             st.subheader("Analysis Type")
             analysis_type = st.selectbox(
-                "Select Analysis",
+                "Choose the analysis type to display.",
                 ["Price Trends", "Technical Indicators", "Predictive Analytics", "Portfolio Analysis"]
             )
             

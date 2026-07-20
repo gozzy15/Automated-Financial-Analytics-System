@@ -94,157 +94,161 @@ def create_layout(
         ),
         
         # Top Metrics Cards
-        dbc.Row([
-            dbc.Col(
+        html.Div(
+            dbc.Row([
+                dbc.Col(
 
-                dbc.Card(
+                    dbc.Card(
 
-                    dbc.CardBody([
+                        dbc.CardBody([
 
-                        html.Div(
+                            html.Div(
 
-                            [
+                                [
 
-                                html.H6(
-                                    "📈 SELECTED STOCK(S)",
-                                    className="metric-title"
-                                ),
+                                    html.H6(
+                                        "📈 SELECTED STOCK(S)",
+                                        className="metric-title"
+                                    ),
 
-                                html.H1(
-                                    id="kpi-total-tickers",
-                                    style={
-                                        "fontWeight": "bold",
-                                        "color": "#1565C0",
-                                        "fontSize": "42px",
-                                        "textAlign": "center"
-                                    }
-                                ),
+                                    html.H1(
+                                        id="kpi-total-tickers",
+                                        style={
+                                            "fontWeight": "bold",
+                                            "color": "#0D47A1",
+                                            "fontSize": "42px",
+                                            "textAlign": "center"
+                                        }
+                                    ),
 
-                            ]
+                                ]
 
-                        )
+                            )
 
-                    ]),
+                        ]),
 
-                    className="metric-card"
-                )
+                        className="metric-card"
+                    )
 
-            , width=3),
-            
-            dbc.Col(
+                , width=3),
+                
+                dbc.Col(
 
-                dbc.Card(
+                    dbc.Card(
 
-                    dbc.CardBody([
+                        dbc.CardBody([
 
-                        html.H6(
-                            "📊 TRADING RECORDS",
-                            className="metric-title"
-                        ),
+                            html.H6(
+                                "📊 TRADING RECORDS",
+                                className="metric-title"
+                            ),
 
-                        html.H1(
-                            id="kpi-total-records",
-                            style={
-                                "fontWeight": "bold",
-                                "color": "#28A745",
-                                "fontSize": "42px",
-                                "textAlign": "center"
-                            }
-                        ),
+                            html.H1(
+                                id="kpi-total-records",
+                                style={
+                                    "fontWeight": "bold",
+                                    "color": "#0D47A1",
+                                    "fontSize": "42px",
+                                    "textAlign": "center"
+                                }
+                            ),
 
-                        html.P(
-                            "Historical Data Points",
-                            className="metric-footer"
-                        )
+                            html.P(
+                                "Historical Data Points",
+                                className="metric-footer"
+                            )
 
-                    ]),
+                        ]),
 
-                    className="metric-card"
+                        className="metric-card"
 
-                )
+                    )
 
-            , width=3),
-            
-            dbc.Col(
+                , width=3),
+                
+                dbc.Col(
 
-                dbc.Card(
+                    dbc.Card(
 
-                    dbc.CardBody([
+                        dbc.CardBody([
 
-                        html.H6(
-                            "📅 SELECTED PERIOD",
-                            className="metric-title"
-                        ),
+                            html.H6(
+                                "📅 SELECTED PERIOD",
+                                className="metric-title"
+                            ),
 
-                        html.H4(
-                            id="kpi-start-date",
-                            style={
-                                "color": "#17A2B8",
-                                "fontWeight": "bold", 
-                                "textAlign": "center"
-                            }
-                        ),
+                            html.H4(
+                                id="kpi-start-date",
+                                style={
+                                    "color": "#0D47A1",
+                                    "fontWeight": "bold", 
+                                    "textAlign": "center"
+                                }
+                            ),
 
-                        html.H5(
-                            "to",
-                            style={
-                                "color": "#999",
-                                "textAlign": "center"
-                                
-                            }
-                        ),
+                            html.H5(
+                                "to",
+                                style={
+                                    "color": "#999",
+                                    "textAlign": "center"
+                                    
+                                }
+                            ),
 
-                        html.H4(
-                            id="kpi-end-date",
-                            style={
-                                "color": "#17A2B8",
-                                "fontWeight": "bold", 
-                                "textAlign": "center"
-                            }
-                        )
+                            html.H4(
+                                id="kpi-end-date",
+                                style={
+                                    "color": "#0D47A1",
+                                    "fontWeight": "bold", 
+                                    "textAlign": "center"
+                                }
+                            )
 
-                    ]),
+                        ]),
 
-                    className="metric-card"
+                        className="metric-card"
 
-                )
+                    )
 
-            , width=3),
-            
-            dbc.Col(
+                , width=3),
+                
+                dbc.Col(
 
-                dbc.Card(
+                    dbc.Card(
 
-                    dbc.CardBody([
+                        dbc.CardBody([
 
-                        html.H6(
-                            "💰 AVERAGE DAILY RETURN",
-                            className="metric-title"
-                        ),
+                            html.H6(
+                                "💰 AVERAGE DAILY RETURN",
+                                className="metric-title"
+                            ),
 
-                        html.H1(
-                            id="kpi-average-return",
-                            style={
-                                "fontWeight": "bold",
-                                "color": "#FFC107",
-                                "fontSize": "42px", 
-                                "textAlign": "center"
-                                
-                            }
-                        ),
+                            html.H1(
+                                id="kpi-average-return",
+                                style={
+                                    "fontWeight": "bold",
+                                    "color": "#FFC107",
+                                    "fontSize": "42px", 
+                                    "textAlign": "center"
+                                    
+                                }
+                            ),
 
-                        html.P(
-                            "Across Selected Stocks",
-                            className="metric-footer"
-                        )
+                            html.P(
+                                "Across Selected Stocks",
+                                className="metric-footer"
+                            )
 
-                    ]),
+                        ]),
 
-                    className="metric-card"
-                )
+                        className="metric-card"
+                    )
 
-            , width=3),
-        ], className="mb-4"),
+                , width=3),
+            ], id="kpi-row", className="mb-4"
+            ),
+            id="sticky-kpi-container"
+        ),
         
         dbc.Row([
 
@@ -768,7 +772,7 @@ def create_layout(
 
                         )
 
-                    ], label="📈 Charts"),
+                    ], label="📈 Charts", tab_id="charts"),
                     
                     # Data Tab
                     dbc.Tab([

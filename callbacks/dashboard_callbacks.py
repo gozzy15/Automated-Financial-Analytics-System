@@ -323,6 +323,7 @@ def register_dashboard_callbacks(
             Output("kpi-start-date", "children"),
             Output("kpi-end-date", "children"),
             Output("kpi-average-return", "children"),
+            Output("kpi-average-return", "style"),
         ],
         [
             Input("ticker-dropdown", "value"),
@@ -334,7 +335,15 @@ def register_dashboard_callbacks(
     def update_kpi_cards(selected_tickers, start_date, end_date):
 
         if not selected_tickers:
-            return "0", "0", "-", "-", "0.00%"
+
+            default_style = {
+                "fontWeight": "bold",
+                "fontSize": "42px",
+                "textAlign": "center",
+                "color": "#6C757D"
+            }
+
+            return "0", "0", "-", "-", "0.00%", default_style
 
         if isinstance(selected_tickers, str):
             selected_tickers = [selected_tickers]
@@ -353,12 +362,21 @@ def register_dashboard_callbacks(
                 combined.append(df)
 
         if not combined:
+
+            default_style = {
+                "fontWeight": "bold",
+                "fontSize": "42px",
+                "textAlign": "center",
+                "color": "#6C757D"
+            }
+
             return (
                 "0",
                 "0",
                 "-",
                 "-",
-                "0.00%"
+                "0.00%",
+                default_style
             )
 
         df = pd.concat(
@@ -381,18 +399,74 @@ def register_dashboard_callbacks(
 
         avg_return = df["Daily_Return"].mean() * 100
 
+        if avg_return > 0:
+            color = "#28A745"      # Green
+        elif avg_return < 0:
+            color = "#DC3545"      # Red
+        else:
+            color = "#6C757D"      # Neutral gray
+
+        return_style = {
+
+            "fontWeight": "bold",
+
+            "fontSize": "42px",
+
+            "textAlign": "center",
+
+            "color": color
+
+        }
+
+        if avg_return > 0:
+
+            avg_return_text = html.Span(
+                [
+                    html.Span(
+                        "▲",
+                        style={
+                            "fontSize": "24px",
+                            "marginRight": "6px",
+                            "verticalAlign": "middle"
+                        }
+                    ),
+                    html.Span(
+                        f"{avg_return:.2f}%"
+                    )
+                ]
+            )
+
+        elif avg_return < 0:
+
+            avg_return_text = html.Span(
+                [
+                    html.Span(
+                        "▼",
+                        style={
+                            "fontSize": "24px",
+                            "marginRight": "6px",
+                            "verticalAlign": "middle"
+                        }
+                    ),
+                    html.Span(
+                        f"{abs(avg_return):.2f}%"
+                    )
+                ]
+            )
+
+        else:
+
+            avg_return_text = html.Span(
+                f"{avg_return:.2f}%"
+            )
+
         return (
-
             f"{total_tickers}",
-
             f"{total_records:,}",
-
             start,
-
             end,
-
-            f"{avg_return:.2f}%"
-
+            avg_return_text,
+            return_style
         )
     
     
