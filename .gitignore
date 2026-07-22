@@ -116,3 +116,6 @@ dist/
 # Coverage
 .coverage
 htmlcov/
+
+# Personal file
+Journal/
