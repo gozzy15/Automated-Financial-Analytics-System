@@ -118,9 +118,7 @@ class ReportGenerator:
             "average_daily_return": round(avg_return, 2),
             "total_volume_traded": int(total_volume),
             "data_points_analyzed": data_points,
-            "report_date": report_time.strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
+            "report_date": report_time.strftime("%Y-%m-%d %I:%M:%S %p WAT")
         }
 
         logging.info(
@@ -691,7 +689,7 @@ class ReportGenerator:
 
             <p>
             Generated at:
-            {datetime.now(ZoneInfo("Africa/Lagos")).strftime('%Y-%m-%d %H:%M:%S')}
+            {metrics["report_date"]}
             </p>
 
             </div>
