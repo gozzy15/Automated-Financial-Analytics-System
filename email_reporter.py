@@ -26,7 +26,7 @@ class EmailReporter:
     
     def create_email_content(self, metrics: dict, predictions: list[dict]) -> str:
         """Create HTML email content"""
-        report_time = datetime.now(ZoneInfo("Africa/Lagos"))
+        report_time = datetime.now(ZoneInfo("Africa/Lagos")).strftime("%A, %d %B %Y • %I:%M:%S %p WAT")
 
         html_content = f"""
         <html>
@@ -324,7 +324,7 @@ class EmailReporter:
         recipient_email=None
     ):
         """Generate reports and send email"""
-        report_time = datetime.now(ZoneInfo("Africa/Lagos"))
+        report_time = datetime.now(ZoneInfo("Africa/Lagos")).strftime("%A, %d %B %Y • %I:%M:%S %p WAT")
 
         logger.info(
             "Starting weekly report generation..."
