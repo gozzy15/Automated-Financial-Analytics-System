@@ -7,6 +7,7 @@ import re
 from utils.logger import logger
 import os
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from system_config import EMAIL_SENDER, EMAIL_PASSWORD, HR_EMAILS
 
 class EmailReporter:
@@ -25,7 +26,7 @@ class EmailReporter:
     
     def create_email_content(self, metrics: dict, predictions: list[dict]) -> str:
         """Create HTML email content"""
-        report_time = datetime.now()
+        report_time = datetime.now(ZoneInfo("Africa/Lagos"))
 
         html_content = f"""
         <html>
@@ -323,7 +324,7 @@ class EmailReporter:
         recipient_email=None
     ):
         """Generate reports and send email"""
-        report_time = datetime.now()
+        report_time = datetime.now(ZoneInfo("Africa/Lagos"))
 
         logger.info(
             "Starting weekly report generation..."
