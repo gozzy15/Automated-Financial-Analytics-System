@@ -185,7 +185,7 @@ class FinancialDashboard:
             col1, col2 = st.columns(2)
             
             #with col1:
-                #if st.button("🔄", help="Refresh Data", use_container_width=True):
+                #if st.button("🔄", help="Refresh Data", width="stretch"):
                     #self.refresh_data()"""
             
             # Email report
@@ -201,13 +201,13 @@ class FinancialDashboard:
                 if st.button(
                     "📧",
                     help="Send Weekly Report",
-                    use_container_width=True
+                    width="stretch"
                 ):
 
                     self.send_report(recipient_email.strip())
             
             with col2:
-                if st.button("🤖", help="Run Predictions", use_container_width=True):
+                if st.button("🤖", help="Run Predictions", width="stretch"):
                     self.run_predictions()
             
             # Link to Advanced Dashboard
@@ -219,12 +219,12 @@ class FinancialDashboard:
                 st.link_button(
                     "🌐 Open Advanced Dashboard",
                     "https://financial-analytics-dashboard-4gyy.onrender.com/",
-                    use_container_width=True,
+                    width="stretch",
                     help="Opens the advanced Dash dashboard in a new tab"
                 )
             except Exception:
                 # Fallback for older Streamlit versions
-                if st.button("🌐 Open Advanced Dashboard", use_container_width=True):
+                if st.button("🌐 Open Advanced Dashboard", width="stretch"):
                     # JavaScript to open in new tab
                     js = """
                     <script>
@@ -490,7 +490,7 @@ class FinancialDashboard:
             template='plotly_white'
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     
     def display_technical_indicators(self, ticker, start_date, end_date):
         """Display technical indicators"""
@@ -554,7 +554,7 @@ class FinancialDashboard:
             )
         
         fig.update_layout(height=800, showlegend=True, template='plotly_white')
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     
     def display_predictions(self):
         """Display ML predictions"""
@@ -613,7 +613,7 @@ class FinancialDashboard:
             combined_data = pd.concat(all_data, ignore_index=True)
             st.dataframe(
                 combined_data,
-                use_container_width=True,
+                width="stretch",
                 hide_index=True
             )
             
