@@ -1,6 +1,7 @@
 import os
 import logging
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import pandas as pd
 import plotly.express as px
 from database_manager import DatabaseHandler
@@ -108,12 +109,16 @@ class ReportGenerator:
             )
             data_points += len(df)
 
+        report_time = datetime.now(
+            ZoneInfo("Africa/Lagos")
+        )
+
         metrics = {
             "total_tickers_analyzed": total_tickers,
             "average_daily_return": round(avg_return, 2),
             "total_volume_traded": int(total_volume),
             "data_points_analyzed": data_points,
-            "report_date": datetime.now().strftime(
+            "report_date": report_time.strftime(
                 "%Y-%m-%d %H:%M:%S"
             )
         }
@@ -686,7 +691,7 @@ class ReportGenerator:
 
             <p>
             Generated at:
-            {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+            {datetime.now(ZoneInfo("Africa/Lagos")).strftime('%Y-%m-%d %H:%M:%S')}
             </p>
 
             </div>
